@@ -12,15 +12,20 @@ async function processImage(
   width: number,
   height: number
 ): Promise<string> {
-  const processed = await sharp(buffer)
-    .resize(width, height, {
-      fit: "cover",
-      position: "center",
-    })
-    .png()
-    .toBuffer();
+  try {
+    const processed = await sharp(buffer)
+      .resize(width, height, {
+        fit: "cover",
+        position: "center",
+      })
+      .png()
+      .toBuffer();
 
-  return processed.toString("base64");
+    return processed.toString("base64");
+  } catch (err) {
+    console.error("Error processing single image:", err);
+    throw err;
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -48,23 +53,24 @@ export async function POST(request: NextRequest) {
 
     const originalBase64 = buffer.toString("base64");
 
-    const formats = await Promise.all(
-      FORMATS.map(async (format) => {
-        const base64 = await processImage(buffer, format.width, format.height);
-        return {
-          [format.name]: {
-            base64,
-            width: format.width,
-            height: format.height,
-          },
-        };
-      })
-    );
+    const formats: Record<string, { base64: string; width: number; height: number }> = {};
 
-    const formatsObject = formats.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    for (const format of FORMATS) {
+      try {
+        const base64 = await processImage(buffer, format.width, format.height);
+        formats[format.name] = {
+          base64,
+          width: format.width,
+          height: format.height,
+        };
+      } catch (err) {
+        console.error(`Error processing ${format.name}:`, err);
+        throw new Error(`Error al procesar formato ${format.name}`);
+      }
+    }
 
     return NextResponse.json({
-      formats: formatsObject,
+      formats,
       original: {
         base64: originalBase64,
         size: buffer.length,

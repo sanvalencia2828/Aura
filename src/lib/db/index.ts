@@ -24,3 +24,14 @@ export {
   isUserEnrolled 
 } from "./courses"
 export type { Course, CourseModule, UserCourse } from "./courses"
+
+export { 
+  getUserSubscription,
+  createSubscription,
+  cancelSubscription,
+  checkFeatureAccess,
+  getUserUnlockedFeatures,
+  FEATURES,
+  PLANS
+} from "./subscriptions"
+export type { Subscription, FeatureAccess } from "./subscriptions"

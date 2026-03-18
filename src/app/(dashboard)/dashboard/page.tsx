@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState, useRef, useCallback } from "react"
 import Link from "next/link"
-import { LogOut, User, Loader2, Image, FolderOpen, Plus, Trophy, BookOpen } from "lucide-react"
+import { LogOut, User, Loader2, Image, FolderOpen, Plus, Trophy, BookOpen, Crown } from "lucide-react"
 import ProofBadge from "@/components/posts/ProofBadge"
 
 interface ProofData {
@@ -17,11 +17,17 @@ interface ProofData {
   } | null
 }
 
+interface SubscriptionData {
+  currentPlan: string
+  postCount: number
+}
+
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [proofData, setProofData] = useState<ProofData | null>(null)
+  const [subscriptionData, setSubscriptionData] = useState<SubscriptionData | null>(null)
   const [isLoadingProof, setIsLoadingProof] = useState(true)
 
   useEffect(() => {
@@ -30,6 +36,7 @@ export default function DashboardPage() {
     }
     if (status === "authenticated") {
       fetchProof()
+      fetchSubscription()
     }
   }, [status, router])
 
@@ -44,6 +51,18 @@ export default function DashboardPage() {
       console.error("Error fetching proof:", error)
     } finally {
       setIsLoadingProof(false)
+    }
+  }
+
+  const fetchSubscription = async () => {
+    try {
+      const response = await fetch("/api/subscription/status")
+      const data = await response.json()
+      if (!data.error) {
+        setSubscriptionData(data)
+      }
+    } catch (error) {
+      console.error("Error fetching subscription:", error)
     }
   }
 
@@ -98,7 +117,7 @@ export default function DashboardPage() {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
         </span>
-        Usuario autenticado - Fase 3
+        Usuario autenticado - Fase 5
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
@@ -137,6 +156,17 @@ export default function DashboardPage() {
               </div>
               <h3 className="font-semibold mb-1">Cursos</h3>
               <p className="text-sm text-zinc-400">Catálogo de xiimalab</p>
+            </Link>
+
+            <Link
+              href="/pricing"
+              className="group p-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-2xl hover:border-purple-500/50 transition-all"
+            >
+              <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Crown className="w-6 h-6 text-purple-400" />
+              </div>
+              <h3 className="font-semibold mb-1">Planes</h3>
+              <p className="text-sm text-zinc-400">Ver planes y features</p>
             </Link>
           </div>
         </div>
