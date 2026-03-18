@@ -12,3 +12,15 @@ export {
   PROOF_LEVELS 
 } from "./posts"
 export type { Post, PostImage, PostProof, ProofLevel } from "./posts"
+
+export { 
+  getCourses, 
+  getCourseById, 
+  getFeaturedCourses,
+  getCoursesByCategory,
+  enrollInCourse,
+  getUserCourses,
+  updateCourseProgress,
+  isUserEnrolled 
+} from "./courses"
+export type { Course, CourseModule, UserCourse } from "./courses"

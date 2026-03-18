@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState, useRef, useCallback } from "react"
 import Link from "next/link"
-import { LogOut, User, Loader2, Image, FolderOpen, Plus, Trophy } from "lucide-react"
+import { LogOut, User, Loader2, Image, FolderOpen, Plus, Trophy, BookOpen } from "lucide-react"
 import ProofBadge from "@/components/posts/ProofBadge"
 
 interface ProofData {
@@ -126,6 +126,17 @@ export default function DashboardPage() {
               </div>
               <h3 className="font-semibold mb-1">Mis Posts</h3>
               <p className="text-sm text-zinc-400">Gestiona tus publicaciones</p>
+            </Link>
+
+            <Link
+              href="/courses"
+              className="group p-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-2xl hover:border-blue-500/50 transition-all"
+            >
+              <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <BookOpen className="w-6 h-6 text-blue-400" />
+              </div>
+              <h3 className="font-semibold mb-1">Cursos</h3>
+              <p className="text-sm text-zinc-400">Catálogo de xiimalab</p>
             </Link>
           </div>
         </div>
