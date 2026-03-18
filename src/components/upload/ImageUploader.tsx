@@ -23,13 +23,18 @@ interface ProcessedResult {
   };
 }
 
+interface ImageUploaderProps {
+  onImagesProcessed?: (images: ProcessedFormats) => void;
+  compact?: boolean;
+}
+
 const formatLabels = {
-  square: { name: "Cuadrado", size: "1080×1080", icon: "□" },
-  story: { name: "Historia", size: "1080×1920", icon: "▯" },
-  landscape: { name: "Landscape", size: "1200×630", icon: "▬" },
+  square: { name: "Cuadrado", size: "1080×1080" },
+  story: { name: "Historia", size: "1080×1920" },
+  landscape: { name: "Landscape", size: "1200×630" },
 };
 
-export default function ImageUploader() {
+export default function ImageUploader({ onImagesProcessed, compact = false }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -102,6 +107,9 @@ export default function ImageUploader() {
 
       const data = await response.json();
       setProcessedResult(data);
+      if (onImagesProcessed) {
+        onImagesProcessed(data.formats);
+      }
     } catch (err) {
       setError("Error al procesar la imagen. Intenta de nuevo.");
       console.error(err);
