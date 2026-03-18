@@ -1,5 +1,9 @@
-import ImageUploader from "@/components/upload/ImageUploader";
-import { Layers, Zap, Shield, ArrowRight } from "lucide-react";
+"use client"
+
+import ImageUploader from "@/components/upload/ImageUploader"
+import { Layers, Zap, Shield, ArrowRight, User, LogIn } from "lucide-react"
+import Link from "next/link"
+import { useSession } from "next-auth/react"
 
 const features = [
   {
@@ -17,9 +21,11 @@ const features = [
     title: "Seguro",
     description: "Tus imágenes se procesan localmente",
   },
-];
+]
 
 export default function Home() {
+  const { data: session, status } = useSession()
+
   return (
     <main className="min-h-screen relative overflow-hidden">
       <div className="container mx-auto px-4 py-16 relative z-10">
@@ -29,7 +35,7 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            Fase 1: MVP Activo
+            Fase 2: Autenticación Activa
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-primary to-accent bg-clip-text text-transparent">
@@ -39,6 +45,36 @@ export default function Home() {
             Transforma tus imágenes en múltiples formatos optimizados para redes sociales
           </p>
         </header>
+
+        <div className="flex justify-center mb-8">
+          {status === "loading" ? (
+            <div className="text-zinc-400">Cargando...</div>
+          ) : session ? (
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-accent rounded-xl font-medium hover:opacity-90 transition-all"
+            >
+              <User className="w-5 h-5" />
+              Ir al Dashboard
+            </Link>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link
+                href="/login"
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-accent rounded-xl font-medium hover:opacity-90 transition-all"
+              >
+                <LogIn className="w-5 h-5" />
+                Iniciar Sesión
+              </Link>
+              <Link
+                href="/register"
+                className="px-6 py-3 border border-border rounded-xl font-medium hover:border-primary/50 transition-colors"
+              >
+                Crear Cuenta
+              </Link>
+            </div>
+          )}
+        </div>
 
         <section className="mb-16">
           <ImageUploader />
@@ -66,13 +102,13 @@ export default function Home() {
             <span className="hidden md:inline">•</span>
             <div className="flex items-center gap-2">
               <span>Roadmap:</span>
-              <span className="text-primary">Fase 1</span>
+              <span className="text-primary">Fase 2</span>
               <ArrowRight className="w-4 h-4" />
-              <span className="text-zinc-600">Fase 2 (Próximamente)</span>
+              <span className="text-zinc-600">Fase 3 (Próximamente)</span>
             </div>
           </div>
         </footer>
       </div>
     </main>
-  );
+  )
 }
